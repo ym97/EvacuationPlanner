@@ -1,0 +1,1207 @@
+
+<!DOCTYPE HTML>
+
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<html>
+<head>
+<title>Graph</title>
+<script type="text/javascript">
+	function changeBackground(url_of_pic) {
+		document.body.style.backgroundImage = url("'" + url_of_pic + "'");
+	}
+	var popupnodeWindow = null;
+
+	function nodechild_open() {
+
+		popupnodeWindow = window
+				.open(
+						'NodeForm.jsp',
+						"_blank",
+						"directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=400,height=700,left=440,top=0");
+	}
+
+	function nodeparent_disable() {
+		if (popupnodeWindow && !popupbnodeWindow.closed)
+			popupnodeWindow.focus();
+	}
+
+	var popupedgeWindow = null;
+
+	function edgechild_open(id) {
+		//req.setAttribute("givenid",id);
+		//req.getRequestDispatcher("EdgeForm.jsp").forward(req, resp);
+
+		popupedgeWindow = window
+				.open(
+						'EdgeForm.jsp',
+						"_blank",
+						"directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=400,height=440,left=440 , top=148'");
+	}
+
+	function edgeparent_disable() {
+		if (popupedgeWindow && !popupedgeWindow.closed)
+			popupedgeWindow.focus();
+	}
+
+	function myFunction() {
+		document.getElementById("myDropdown").classList.toggle("show");
+	}
+
+	// Close the dropdown menu if the user clicks outside of it
+	window.onclick = function(event) {
+		if (!event.target.matches('.dropbtn')) {
+
+			var dropdowns = document.getElementsByClassName("dropdown-content");
+			var i;
+			for (i = 0; i < dropdowns.length; i++) {
+				var openDropdown = dropdowns[i];
+				if (openDropdown.classList.contains('show')) {
+					openDropdown.classList.remove('show');
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+p {
+	text-align: center;
+	overflow: overlay;
+	position: relative;
+}
+
+body {
+	overflow-y: scroll;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: url('bodyBG.jpg');
+	background-repeat: no-repeat;
+}
+
+#plan {
+	scrollbar: yes;
+	width: 700px;
+	height: 600px;
+	align: center;
+	/* background-image: url('kresit_1_Floor_plan.png'); */
+	background-repeat: no-repeat;
+	background-position: center;
+	border-size: 3px;
+	border-style: solid;
+	border-color: brown;
+	align: center;
+	width: 700px;
+}
+
+#toolbox {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	margin-bottom: 0.5em;
+	margin-left: 1em;
+	border: 2px solid #EEEEEE;
+	border-radius: 5px;
+	padding: 1em;
+	z-index: 5;
+}
+
+#toolbox input {
+	width: 30px;
+	opacity: 0.4;
+}
+
+#toolbox input:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+#hidden-file-upload {
+	display: none;
+}
+
+#download-input {
+	margin: 0 0.5em;
+}
+
+.conceptG text {
+	pointer-events: none;
+}
+
+marker {
+	fill: #333;
+}
+
+g.conceptG circle {
+	fill: red;
+}
+
+g.conceptG:hover circle {
+	stroke-width: 8px;
+	stroke: red;
+	stroke-opacity: 0.2;
+}
+
+g.selected circle {
+	fill: magenta;
+}
+
+g.selected:hover circle {
+	stroke: magenta;
+	stroke-width: 8px;
+	stroke-opacity: 0.2;
+}
+/* Dropdown Button */
+.dropbtn {
+	background-color: #4CAF50;
+	color: white;
+	padding: 16px;
+	font-size: 16px;
+	border: none;
+	cursor: pointer;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+	background-color: #3e8e41;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+	background-color: #f1f1f1
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {
+	display: block;
+}
+	#narrow {
+  float: right;
+  width: 200px;
+  background: lightblue;
+}
+#wide {
+  float: left;
+  width: calc(100% - 200px);
+  background: lightgreen;
+}
+path.link {
+	fill: pink;
+	stroke: #333;
+	stroke-width: 6px;
+	cursor: default;
+}
+
+path.link:hover {
+	stroke: black;
+}
+
+g.connect-node circle {
+	fill: #BEFFFF;
+}
+
+path.link.hidden {
+	stroke-width: 0;
+}
+
+#parent_div_2 {
+	width: 100px;
+	height: 100px;
+	border: 1px solid red;
+	margin-right: 10px;
+	float: left;
+}
+
+path.link.selected {
+	stroke: rgb(229, 172, 247);
+}
+</style>
+<script type="text/javascript">
+	var imageArray = [ "kresit_0_Floor_plan.png", "kresit_1_Floor_plan.png",
+			"kresit_2_Floor_plan.png", "kresit_3_Floor_plan.png",
+			"kresit_4_Floor_plan.png" ];
+	//	altArray = new Array("", "Red Star", "Yellow Star", "Pink Star");
+
+	function changeFloor() {
+
+		//alert("before")
+		var Index = menuForm.select1.selectedIndex;
+		//var Index = document.menuForm.select1.option[document.menuForm.select1.selectedIndex].value;
+		//alert(imageArray[Index]);
+		//document.plan.src = imageArray[Index];
+
+		plan.style.backgroundImage = 'url(' + imageArray[Index] + ')';
+	}
+</script>
+
+</head>
+
+<body onFocus="parent_disable();" onclick="parent_disable();">
+
+<div id="wide">
+		<input type="file" id="hidden-file-upload"> <input
+			id="upload-input" type="image" title="upload graph" src="upload.png"
+			alt="upload graph" width=20 height=20> <input type="image"
+			id="download-input" title="download graph" src="download.png"
+			alt="download graph" width=20 height=20> <input type="image"
+			id="delete-graph" title="delete graph" src="delete.png"
+			alt="delete graph" width=20 height=20><input type="button"
+			id="mybutton" />
+		<form>
+			<input type="hidden" id="idd" name="idd" value="" /> <input
+				type="hidden" id="xx" name="xx" value="" /> <input type="hidden"
+				name="yy" id="yy" value="" />
+		</form>
+	</div>
+
+	<div style="width: 1100px; margin: 0 auto;">
+		<form id="menuForm">
+			<select id="select1" name="floors ">
+				<!-- onchange="changeFloor()" -->
+				<option value="0">Floor 0</option>
+				<option value="1">Floor 1</option>
+				<option value="2">Floor 2</option>
+				<option value="3">Floor 3</option>
+				<option value="4">Floor 4</option>
+			</select> <input type="button" onclick="changeFloor();" value="Load" />
+		</form>
+	</div>
+
+
+	<div id="plan" style="width: 700px; margin: 0 auto;">
+		<script src="//d3js.org/d3.v3.js" charset="utf-8"></script>
+		<script src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js"></script>
+		<script>
+			document.onload = (function(d3, saveAs, Blob, undefined) {
+				"use strict";
+
+				// define graphcreator object
+				var GraphCreator = function(svg, nodes, edges) {
+					var thisGraph = this;
+					thisGraph.idct = 0;
+
+					thisGraph.nodes = nodes || [];
+					thisGraph.edges = edges || [];
+
+					thisGraph.state = {
+						selectedNode : null,
+						selectedEdge : null,
+						mouseDownNode : null,
+						mouseDownLink : null,
+						justDragged : false,
+						justScaleTransGraph : false,
+						lastKeyDown : -1,
+						shiftNodeDrag : false,
+						selectedText : null
+					};
+
+					// define arrow markers for graph links
+					var defs = svg.append('svg:defs');
+					defs.append('svg:marker').attr('id', 'end-arrow').attr(
+							'viewBox', '0 0 0 0').attr('refX', "0").attr(
+							'markerWidth', 0).attr('markerHeight', 0).attr(
+							'orient', 'auto').append('svg:path').attr('d',
+							'M0,0');
+
+					// define arrow markers for leading arrow
+					defs.append('svg:marker').attr('id', 'mark-end-arrow')
+							.attr('viewBox', '0 0 00 00').attr('refX', 0).attr(
+									'markerWidth', 0).attr('markerHeight', 0)
+							.attr('orient', 'auto').append('svg:path').attr(
+									'd', 'M0,00');
+
+					thisGraph.svg = svg;
+					thisGraph.svgG = svg.append("g").classed(
+							thisGraph.consts.graphClass, true);
+					var svgG = thisGraph.svgG;
+
+					// displayed when dragging between nodes
+					thisGraph.dragLine = svgG.append('svg:path').attr('class',
+							'link dragline hidden').attr('d', 'M0,0L0,0')
+							.style('marker-end', 'url(#mark-end-arrow)');
+
+					// svg nodes and edges 
+					thisGraph.paths = svgG.append("g").selectAll("g");
+					thisGraph.circles = svgG.append("g").selectAll("g");
+
+					thisGraph.drag = d3.behavior.drag().origin(function(d) {
+						return {
+							x : d.x,
+							y : d.y
+						};
+					}).on("drag", function(args) {
+						thisGraph.state.justDragged = true;
+						thisGraph.dragmove.call(thisGraph, args);
+					}).on("dragend", function() {
+						// todo check if edge-mode is selected
+					});
+
+					// listen for key events
+					d3.select(window).on("keydown", function() {
+						thisGraph.svgKeyDown.call(thisGraph);
+					}).on("keyup", function() {
+						thisGraph.svgKeyUp.call(thisGraph);
+					});
+					svg.on("mousedown", function(d) {
+						thisGraph.svgMouseDown.call(thisGraph, d);
+					});
+					svg.on("mouseup", function(d) {
+						thisGraph.svgMouseUp.call(thisGraph, d);
+					});
+
+					// listen for dragging
+					var dragSvg = d3.behavior.zoom().on("zoom", function() {
+						if (d3.event.sourceEvent.shiftKey) {
+							// TODO  the internal d3 state is still changing
+							return false;
+						} else {
+							thisGraph.zoomed.call(thisGraph);
+						}
+						return true;
+					}).on(
+							"zoomstart",
+							function() {
+								var ael = d3.select(
+										"#" + thisGraph.consts.activeEditId)
+										.node();
+								if (ael) {
+									ael.blur();
+								}
+								if (!d3.event.sourceEvent.shiftKey)
+									d3.select('body').style("cursor", "move");
+							}).on("zoomend", function() {
+						d3.select('body').style("cursor", "auto");
+					});
+
+					svg.call(dragSvg).on("dblclick.zoom", null);
+
+					// listen for resize
+					window.onresize = function() {
+						thisGraph.updateWindow(svg);
+					};
+
+					// handle download data
+					d3.select("#download-input").on("click", function() {
+						var saveEdges = [];
+						thisGraph.edges.forEach(function(val, i) {
+							saveEdges.push({
+								source : val.source.id,
+								target : val.target.id
+							});
+						});
+						var blob = new Blob([ window.JSON.stringify({
+							"nodes" : thisGraph.nodes,
+							"edges" : saveEdges
+						}) ], {
+							type : "text/plain;charset=utf-8"
+						});
+						saveAs(blob, "mydag.json");
+					});
+
+					// handle uploaded data
+					d3.select("#upload-input").on("click", function() {
+						document.getElementById("hidden-file-upload").click();
+					});
+					d3
+							.select("#hidden-file-upload")
+							.on(
+									"change",
+									function() {
+										if (window.File && window.FileReader
+												&& window.FileList
+												&& window.Blob) {
+											var uploadFile = this.files[0];
+											var filereader = new window.FileReader();
+
+											filereader.onload = function() {
+												var txtRes = filereader.result;
+												// TODO better error handling
+												try {
+													var jsonObj = JSON
+															.parse(txtRes);
+													thisGraph.deleteGraph(true);
+													thisGraph.nodes = jsonObj.nodes;
+													var max = -1, i;
+													for (i = 0; i < jsonObj.nodes.length; i++) {
+														if (jsonObj.nodes[i].id > max)
+															max = jsonObj.nodes[i].id;
+													}
+													thisGraph.setIdCt(max + 1);
+													var newEdges = jsonObj.edges;
+													newEdges
+															.forEach(function(
+																	e, i) {
+																newEdges[i] = {
+																	source : thisGraph.nodes
+																			.filter(function(
+																					n) {
+																				return n.id == e.source;
+																			})[0],
+																	target : thisGraph.nodes
+																			.filter(function(
+																					n) {
+																				return n.id == e.target;
+																			})[0]
+																};
+															});
+													thisGraph.edges = newEdges;
+													thisGraph.updateGraph();
+												} catch (err) {
+													window
+															.alert("Error parsing uploaded file\nerror message: "
+																	+ err.message);
+													return;
+												}
+											};
+											filereader.readAsText(uploadFile);
+
+										} else {
+											alert("Your browser won't let you save this graph -- try upgrading your browser to IE 10+ or Chrome or Firefox.");
+										}
+										alert("hi L");
+										thisGraph.setIdCt(thisGraph.idct++);
+										thisGraph.nodes.push({
+											"id" : "node_0_9983",
+											"title" : "",
+											"x" : 400,
+											"y" : 400
+										});
+
+										thisGraph.updateGraph();
+
+									});
+
+					// handle delete graph
+					d3.select("#delete-graph").on("click", function() {
+						thisGraph.deleteGraph(false);
+					});
+				};
+
+				GraphCreator.prototype.setIdCt = function(idct) {
+					this.idct = idct;
+				};
+
+				GraphCreator.prototype.consts = {
+					selectedClass : "selected",
+					connectClass : "connect-node",
+					circleGClass : "conceptG",
+					graphClass : "graph",
+					activeEditId : "active-editing",
+					BACKSPACE_KEY : 8,
+					DELETE_KEY : 46,
+					ENTER_KEY : 13,
+					nodeRadius : 10
+				};
+
+				/* PROTOTYPE FUNCTIONS */
+
+				GraphCreator.prototype.dragmove = function(d) {
+					var thisGraph = this;
+					if (thisGraph.state.shiftNodeDrag) {
+						thisGraph.dragLine.attr('d', 'M' + d.x + ',' + d.y
+								+ 'L' + d3.mouse(thisGraph.svgG.node())[0]
+								+ ',' + d3.mouse(this.svgG.node())[1]);
+					} else {
+						d.x += d3.event.dx;
+						d.y += d3.event.dy;
+						thisGraph.updateGraph();
+					}
+				};
+
+				GraphCreator.prototype.deleteGraph = function(skipPrompt) {
+					var thisGraph = this, doDelete = true;
+					if (!skipPrompt) {
+						doDelete = window
+								.confirm("Press OK to delete this graph");
+					}
+					if (doDelete) {
+						thisGraph.nodes = [];
+						thisGraph.edges = [];
+						thisGraph.updateGraph();
+					}
+				};
+
+				/* select all text in element: taken from http://stackoverflow.com/questions/6139107/programatically-select-text-in-a-contenteditable-html-element */
+				GraphCreator.prototype.selectElementContents = function(el) {
+					var range = document.createRange();
+					range.selectNodeContents(el);
+					var sel = window.getSelection();
+					sel.removeAllRanges();
+					sel.addRange(range);
+				};
+				d3.select("#mybutton").on(
+						"click",
+						function() {
+
+							var ids = [ "1", "2", "4" ];
+							var i;
+							for (i = 0; i < ids.length; i++) {
+
+								d3.select("#node_" + ids[i]).style("fill",
+										"blue");
+								d3.select("#path_" + ids[i]).style("stroke",
+										"orange").style("stroke-width",
+										2 * i + 1);
+
+							}
+
+						});
+
+				/* insert svg line breaks: taken from http://stackoverflow.com/questions/13241475/how-do-i-include-newlines-in-labels-in-d3-charts */
+				GraphCreator.prototype.insertTitleLinebreaks = function(gEl,
+						title) {
+					var words = title.split(/\s+/g), nwords = words.length;
+					var el = gEl.append("text").attr("text-anchor", "middle")
+							.attr("dy", "-" + (nwords - 1) * 7.5);
+
+					for (var i = 0; i < words.length; i++) {
+						var tspan = el.append('tspan').text(words[i]);
+						if (i > 0)
+							tspan.attr('x', 0).attr('dy', '15');
+					}
+				};
+
+				// remove edges associated with a node
+				GraphCreator.prototype.spliceLinksForNode = function(node) {
+					var thisGraph = this, toSplice = thisGraph.edges
+							.filter(function(l) {
+								return (l.source === node || l.target === node);
+							});
+					toSplice.map(function(l) {
+						thisGraph.edges.splice(thisGraph.edges.indexOf(l), 1);
+					});
+				};
+
+				GraphCreator.prototype.replaceSelectEdge = function(d3Path,
+						edgeData) {
+					var thisGraph = this;
+					d3Path.classed(thisGraph.consts.selectedClass, true);
+					if (thisGraph.state.selectedEdge) {
+						thisGraph.removeSelectFromEdge();
+					}
+					thisGraph.state.selectedEdge = edgeData;
+				};
+
+				GraphCreator.prototype.replaceSelectNode = function(d3Node,
+						nodeData) {
+					var thisGraph = this;
+					d3Node.classed(this.consts.selectedClass, true);
+					if (thisGraph.state.selectedNode) {
+						thisGraph.removeSelectFromNode();
+					}
+					thisGraph.state.selectedNode = nodeData;
+				};
+
+				GraphCreator.prototype.removeSelectFromNode = function() {
+					var thisGraph = this;
+					thisGraph.circles.filter(function(cd) {
+						return cd.id === thisGraph.state.selectedNode.id;
+					}).classed(thisGraph.consts.selectedClass, false);
+					thisGraph.state.selectedNode = null;
+				};
+
+				GraphCreator.prototype.removeSelectFromEdge = function() {
+					var thisGraph = this;
+					thisGraph.paths.filter(function(cd) {
+						return cd === thisGraph.state.selectedEdge;
+					}).classed(thisGraph.consts.selectedClass, false);
+					thisGraph.state.selectedEdge = null;
+				};
+
+				GraphCreator.prototype.pathMouseDown = function(d3path, d) {
+					var thisGraph = this, state = thisGraph.state;
+					d3.event.stopPropagation();
+					state.mouseDownLink = d;
+
+					if (state.selectedNode) {
+						thisGraph.removeSelectFromNode();
+					}
+
+					var prevEdge = state.selectedEdge;
+					if (!prevEdge || prevEdge !== d) {
+						thisGraph.replaceSelectEdge(d3path, d);
+					} else {
+						thisGraph.removeSelectFromEdge();
+					}
+				};
+
+				// mousedoubleclick on edge
+				GraphCreator.prototype.pathMouseClick = function(d3path, d) {
+					var thisGraph = this, state = thisGraph.state;
+					d3.event.stopPropagation();
+					state.mouseDownLink = d;
+					edgechild_open();
+				};
+				// mousedown on node
+				GraphCreator.prototype.circleMouseDown = function(d3node, d) {
+					var thisGraph = this, state = thisGraph.state;
+					d3.event.stopPropagation();
+					state.mouseDownNode = d;
+					if (d3.event.shiftKey) {
+						state.shiftNodeDrag = d3.event.shiftKey;
+						// reposition dragged directed edge
+						thisGraph.dragLine.classed('hidden', false).attr('d',
+								'M' + d.x + ',' + d.y + 'L' + d.x + ',' + d.y);
+						return;
+					}
+				};
+
+				// mousedoubleclick on node
+				GraphCreator.prototype.circleMouseClick = function(d3node, d) {
+
+					var thisGraph = this, state = thisGraph.state;
+
+					d3.event.stopPropagation();
+					state.mouseDownNode = d;
+					alert("entered")
+					document.getElementById("idd").value = d.id;
+					document.getElementById("xx").value = d.x;
+					document.getElementById("yy").value = d.y;
+					///////////////////////////////////
+					///////////////////////////////////
+		<%String amma0 = request.getParameter("idd");
+			System.out.println(amma0);
+			String amma1 = request.getParameter("xx");
+			System.out.println(amma1);
+			String amma2 = request.getParameter("yy");
+			System.out.println(amma2);
+
+			//session.setAttribute("the_id", request.getParameter("idd"));
+			//session.setAttribute("the_x", request.getParameter("xx"));
+			//session.setAttribute("the_y", request.getParameter("yy"));%>
+			//alert("after setting attr")
+					//nodechild_open();
+
+				};
+				/* place editable text on node in place of svg text */
+				GraphCreator.prototype.changeTextOfNode = function(d3node, d) {
+					var thisGraph = this, consts = thisGraph.consts, htmlEl = d3node
+							.node();
+					d3node.selectAll("text").remove();
+					var nodeBCR = htmlEl.getBoundingClientRect(), curScale = nodeBCR.width
+							/ consts.nodeRadius, placePad = 5 * curScale, useHW = curScale > 1 ? nodeBCR.width * 0.71
+							: consts.nodeRadius * 1.42;
+					// replace with editableconent text
+					var d3txt = thisGraph.svg
+							.selectAll("foreignObject")
+							.data([ d ])
+							.enter()
+							.append("foreignObject")
+							.attr("x", nodeBCR.left + placePad)
+							.attr("y", nodeBCR.top + placePad)
+							.attr("height", 2 * useHW)
+							.attr("width", useHW)
+							.append("xhtml:p")
+							.attr("id", consts.activeEditId)
+							.attr("contentEditable", "true")
+							.text(d.title)
+							.on("mousedown", function(d) {
+								d3.event.stopPropagation();
+							})
+							.on(
+									"keydown",
+									function(d) {
+										d3.event.stopPropagation();
+										if (d3.event.keyCode == consts.ENTER_KEY
+												&& !d3.event.shiftKey) {
+											this.blur();
+										}
+									}).on(
+									"blur",
+									function(d) {
+										d.title = this.textContent;
+										thisGraph.insertTitleLinebreaks(d3node,
+												d.title);
+										d3.select(this.parentElement).remove();
+									});
+					return d3txt;
+				};
+
+				// mouseup on nodes
+				GraphCreator.prototype.circleMouseUp = function(d3node, d) {
+					var thisGraph = this, state = thisGraph.state, consts = thisGraph.consts;
+					// reset the states
+					state.shiftNodeDrag = false;
+					d3node.classed(consts.connectClass, false);
+
+					var mouseDownNode = state.mouseDownNode;
+
+					if (!mouseDownNode)
+						return;
+
+					thisGraph.dragLine.classed("hidden", true);
+
+					if (mouseDownNode !== d) {
+						// we're in a different node: create new edge for mousedown edge and add to graph
+						var newEdge = {
+							source : mouseDownNode,
+							target : d
+						};
+						var filtRes = thisGraph.paths.filter(function(d) {
+							if (d.source === newEdge.target
+									&& d.target === newEdge.source) {
+								thisGraph.edges.splice(thisGraph.edges
+										.indexOf(d), 1);
+							}
+							return d.source === newEdge.source
+									&& d.target === newEdge.target;
+						});
+						if (!filtRes[0].length) {
+							thisGraph.edges.push(newEdge);
+							thisGraph.updateGraph();
+						}
+					} else {
+						// we're in the same node
+						if (state.justDragged) {
+							// dragged, not clicked
+							state.justDragged = false;
+						} else {
+							// clicked, not dragged
+							if (d3.event.shiftKey) {
+								// shift-clicked node: edit text content
+								var d3txt = thisGraph.changeTextOfNode(d3node,
+										d);
+								var txtNode = d3txt.node();
+								thisGraph.selectElementContents(txtNode);
+								txtNode.focus();
+							} else {
+								if (state.selectedEdge) {
+									thisGraph.removeSelectFromEdge();
+								}
+								var prevNode = state.selectedNode;
+
+								if (!prevNode || prevNode.id !== d.id) {
+									thisGraph.replaceSelectNode(d3node, d);
+								} else {
+									thisGraph.removeSelectFromNode();
+								}
+							}
+						}
+					}
+					state.mouseDownNode = null;
+					return;
+
+				}; // end of circles mouseup
+
+				// mousedown on main svg
+				GraphCreator.prototype.svgMouseDown = function() {
+					this.state.graphMouseDown = true;
+				};
+
+				// mouseup on main svg
+				GraphCreator.prototype.svgMouseUp = function() {
+					var thisGraph = this, state = thisGraph.state;
+					if (state.justScaleTransGraph) {
+						// dragged not clicked
+						state.justScaleTransGraph = false;
+					} else if (state.graphMouseDown && d3.event.shiftKey) {
+						// clicked not dragged from svg
+						var xycoords = d3.mouse(thisGraph.svgG.node()), d = {
+							id : thisGraph.idct++,
+							title : "",
+							x : xycoords[0],
+							y : xycoords[1]
+						};
+						thisGraph.nodes.push(d);
+						thisGraph.updateGraph();
+						// make title of text immediently editable
+						var d3txt = thisGraph.changeTextOfNode(
+								thisGraph.circles.filter(function(dval) {
+									return dval.id === d.id;
+								}), d), txtNode = d3txt.node();
+						thisGraph.selectElementContents(txtNode);
+						txtNode.focus();
+					} else if (state.shiftNodeDrag) {
+						// dragged from node
+						state.shiftNodeDrag = false;
+						thisGraph.dragLine.classed("hidden", true);
+					}
+					state.graphMouseDown = false;
+				};
+
+				// keydown on main svg
+				GraphCreator.prototype.svgKeyDown = function() {
+					var thisGraph = this, state = thisGraph.state, consts = thisGraph.consts;
+					// make sure repeated key presses don't register for each keydown
+					if (state.lastKeyDown !== -1)
+						return;
+
+					state.lastKeyDown = d3.event.keyCode;
+					var selectedNode = state.selectedNode, selectedEdge = state.selectedEdge;
+
+					switch (d3.event.keyCode) {
+					case consts.BACKSPACE_KEY:
+					case consts.DELETE_KEY:
+						d3.event.preventDefault();
+						if (selectedNode) {
+							thisGraph.nodes.splice(thisGraph.nodes
+									.indexOf(selectedNode), 1);
+							thisGraph.spliceLinksForNode(selectedNode);
+							state.selectedNode = null;
+							thisGraph.updateGraph();
+						} else if (selectedEdge) {
+							thisGraph.edges.splice(thisGraph.edges
+									.indexOf(selectedEdge), 1);
+							state.selectedEdge = null;
+							thisGraph.updateGraph();
+						}
+						break;
+					}
+				};
+
+				GraphCreator.prototype.svgKeyUp = function() {
+					this.state.lastKeyDown = -1;
+				};
+
+				// call to propagate changes to graph
+				GraphCreator.prototype.updateGraph = function() {
+
+					var thisGraph = this, consts = thisGraph.consts, state = thisGraph.state;
+
+					thisGraph.paths = thisGraph.paths.data(thisGraph.edges,
+							function(d) {
+								return String(d.source.id) + "+"
+										+ String(d.target.id);
+							});
+					var paths = thisGraph.paths;
+					// update existing paths
+					paths.style('marker-end', 'url(#end-arrow)').classed(
+							consts.selectedClass, function(d) {
+								return d === state.selectedEdge;
+							}).attr(
+							"d",
+							function(d) {
+								return "M" + d.source.x + "," + d.source.y
+										+ "L" + d.target.x + "," + d.target.y;
+							});
+
+					// add new paths
+					paths.enter().append("path").style('marker-end',
+							'url(#end-arrow)').classed("link", true).attr(
+							"id",
+							function(d, i) {
+								return "path_" + menuForm.select1.selectedIndex
+										+ "_" + i;
+							}).attr(
+							"d",
+							function(d) {
+								return "M" + d.source.x + "," + d.source.y
+										+ "L" + d.target.x + "," + d.target.y;
+							}).on(
+							"mousedown",
+							function(d) {
+								thisGraph.pathMouseDown.call(thisGraph, d3
+										.select(this), d);
+							}).on(
+							"dblclick",
+							function(d) {
+
+								thisGraph.pathMouseClick.call(thisGraph, d3
+										.select(this), d);
+
+								;
+							}).on("mouseup", function(d) {
+						state.mouseDownLink = null;
+					});
+
+					// remove old links
+					paths.exit().remove();
+
+					// update existing nodes
+					thisGraph.circles = thisGraph.circles.data(thisGraph.nodes,
+							function(d) {
+								return d.id;
+							});
+					thisGraph.circles.attr("transform", function(d) {
+						return "translate(" + d.x + "," + d.y + ")";
+					});
+
+					// add new nodes
+					var newGs = thisGraph.circles.enter().append("g");
+
+					newGs.classed(consts.circleGClass, true).attr("transform",
+							function(d) {
+								return "translate(" + d.x + "," + d.y + ")";
+							}).on("mouseover", function(d) {
+						if (state.shiftNodeDrag) {
+							d3.select(this).classed(consts.connectClass, true);
+						}
+					}).on("mouseout", function(d) {
+						d3.select(this).classed(consts.connectClass, false);
+					}).on(
+							"mousedown",
+							function(d) {
+								thisGraph.circleMouseDown.call(thisGraph, d3
+										.select(this), d);
+							}).on(
+							"mouseup",
+							function(d) {
+								thisGraph.circleMouseUp.call(thisGraph, d3
+										.select(this), d);
+							}).on(
+							"dblclick",
+							function(d) {
+
+								thisGraph.circleMouseClick.call(thisGraph, d3
+										.select(this), d);
+
+							}).call(thisGraph.drag);
+
+					newGs
+							.append("circle")
+							.attr("r", String(consts.nodeRadius))
+							.attr(
+									"id",
+									function(d, i) {
+										return "node_"
+												+ menuForm.select1.selectedIndex
+												+ "_" + i;
+									});
+
+					newGs.each(function(d) {
+						thisGraph.insertTitleLinebreaks(d3.select(this),
+								d.title);
+					});
+
+					// remove old nodes
+					thisGraph.circles.exit().remove();
+				};
+
+				/* GraphCreator.prototype.zoomed = function() {
+					this.state.justScaleTransGraph = true;
+					d3.select("." + this.consts.graphClass).attr(
+							"transform",
+							"translate(" + d3.event.translate + ") scale("
+									+ d3.event.scale + ")");
+				};
+				 */
+				GraphCreator.prototype.updateWindow = function(svg) {
+					var docEl = document.documentElement, bodyEl = document
+							.getElementsByTagName('body')[0];
+					var x = window.innerWidth || docEl.clientWidth
+							|| bodyEl.clientWidth;
+					var y = window.innerHeight || docEl.clientHeight
+							|| bodyEl.clientHeight;
+					svg.attr("width", x).attr("height", y);
+				};
+
+				/**** MAIN ****/
+
+				// warn the user when leaving
+				window.onbeforeunload = function() {
+					return "Make sure to save your graph locally before leaving :-)";
+				};
+
+				var docEl = document.documentElement, bodyEl = document
+						.getElementsByTagName('body')[0];
+
+				var width = window.innerWidth || docEl.clientWidth
+						|| bodyEl.clientWidth, height = window.innerHeight
+						|| docEl.clientHeight || bodyEl.clientHeight;
+
+				var xLoc = width / 2 - 25, yLoc = 100;
+
+				// initial node data
+				var nodes = [];
+				var edges = [];
+
+				/** MAIN SVG **/
+				var svg = d3.select("#plan").append("svg").attr("width", width)
+						.attr("height", height);
+				var graph = new GraphCreator(svg, nodes, edges);
+				graph.setIdCt(0);
+				graph.updateGraph();
+			})(window.d3, window.saveAs, window.Blob);
+		</script>
+	</div>
+
+	<div id="narrow">
+		<form role="form" name="nodeform" class="myForm" method="get"
+			enctype="application/x-www-form-urlencoded" action="NodeAddition.jsp">
+			<!-- action="/html/codes/html_form_handler.cfm"  -->
+			<!-- <div ><h6>NODE DETAILS</h6> </div> -->
+			<div class="form-group">
+				<label class="audioOnly" for="node_id">Node ID</label> <input
+					type="text" name="node_id" required
+					placeholder="<%=session.getAttribute("the_id")%>" readonly>
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="node_name">Node Name</label> <input
+					type="text" name="node_name" required placeholder="Node Name">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="building_name">Building Name</label> <input
+					type="text" name="building_name" required
+					placeholder="Building Name">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="capacity">Capacity</label> <input
+					type="number" name="capacity" required placeholder="Capacity">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="floor">Floor Number</label> <input
+					type="number" name="floor" required placeholder="Floor Number"
+					readonly>
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="latitude">Latitude</label> <input
+					type="number" step="0.01" name="latitude" required
+					placeholder=<%=session.getAttribute("the_x")%> readonly>
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="longitude">Longitude</label> <input
+					type="number" step="0.01" name="longitude" required
+					placeholder=<%=session.getAttribute("the_y")%> readonly>
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="node_ladder">Node Ladder</label> <input
+					type="number" name="node_ladder" required placeholder="Node Ladder">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="no_of_ladder">No of Ladder</label> <input
+					type="number" name="no_of_ladder" required
+					placeholder="No of Ladder">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="ladder_load">Ladder Load</label> <input
+					type="number" name="ladder_load" required placeholder="Ladder Load">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="travel_time">Travel Time</label> <input
+					type="number" name="travel_time" required placeholder="Travel Time">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="ladder_capacity">Ladder
+					Capacity</label> <input type="number" name="ladder_capacity" required
+					placeholder="Ladder Capacity">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="start_node">Start Node</label> <input
+					type="text" name="start_node" required placeholder="Start Node">
+			</div>
+
+			<div class="form-group">
+				<label class="audioOnly" for="end_node">End Node</label> <input
+					type="text" name="end_node" required placeholder="End Node">
+			</div>
+			<div class="form-group">
+				<label class="audioOnly" for="placement_time">Placement Time</label>
+				<input type="text" name="placement_time" required
+					placeholder="Placement Time">
+			</div>
+			<button onclick="saveNode();">Save</button>
+
+
+		</form>
+
+
+		<script type="text/javascript">
+			function saveNode() {
+
+				var nodeid = document.nodeform.node_id.value;
+				var nodename = document.nodeform.node_name.value;
+				var building = document.nodeform.building_name.value;
+				var cap = document.nodeform.capacity.value;
+				var floor = document.nodeform.floor.value;
+				var latitude = document.nodeform.latitude.value;
+				var longitude = document.nodeform.longitude.value;
+				var node_ladder = document.nodeform.node_ladder.value;
+				var no_of_ladder = document.nodeform.no_of_ladder.value;
+				var ladder_load = document.nodeform.ladder_load.value;
+				var travel_time = document.nodeform.travel_time.value;
+				var ladder_capacity = document.nodeform.ladder_capacity.value;
+				var start_node = document.nodeform.start_node.value;
+				var end_node = document.nodeform.end_node.value;
+				var placement_time = document.nodeform.placement_time.value;
+
+				// nodeid
+				//building name
+				//floor
+				//lat
+				//long
+				// pre taken 
+
+				if (nodename == "") {
+					alert("Please provide name!");
+					document.nodeform.name.focus();
+				} else if (cap == "") {
+					alert("Please provide capacity!");
+					document.nodeform.capacity.focus();
+				} else if (node_ladder == "") {
+					alert("Please provide node ladder!");
+					document.nodeform.node_ladder.focus();
+				} else if (no_of_ladder == "") {
+					alert("Please provide number of ladder!");
+					document.nodeform.no_of_ladder.focus();
+				} else if (travel_time == "") {
+					alert("Please provide travel time!");
+					document.nodeform.travel_time.focus();
+				} else if (ladder_capacity == "") {
+					alert("Please provide ladder capacity!");
+					document.nodeform.ladder_capacity.focus();
+				} else if (start_node == "") {
+					alert("Please provide start node !");
+					document.nodeform.start_node.focus();
+				} else if (end_node == "") {
+					alert("Please provide end node !");
+					document.nodeform.end_node.focus();
+				} else if (placement_time == "") {
+					alert("Please provide the ladder placement time !");
+					document.nodeform.placement_time.focus();
+				} else {
+
+					alert("storing...");
+
+				}
+
+			}
+		</script>
+	</div>
+</body>
+
+</html>

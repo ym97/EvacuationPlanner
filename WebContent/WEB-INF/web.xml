@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <display-name>Evacuation Planning Using Dynamic Exits</display-name>
+    <listener>
+        <listener-class>BuildingEvacuationPlanner</listener-class>
+    </listener>
+    <servlet>
+        <description>
+		</description>
+        <display-name>EvacuationPlannerHome</display-name>
+        <servlet-name>EvacuationPlannerHome</servlet-name>
+        <servlet-class>
+		EvacuationPlannerHome</servlet-class>
+    </servlet>
+    <servlet>
+        <description>
+		</description>
+        <display-name>BuildingEvacuationPlanner</display-name>
+        <servlet-name>BuildingEvacuationPlanner</servlet-name>
+        <servlet-class>
+		BuildingEvacuationPlanner</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EvacuationPlannerHome</servlet-name>
+        <url-pattern>/EvacuationPlannerHome</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BuildingEvacuationPlanner</servlet-name>
+        <url-pattern>/BuildingEvacuationPlanner</url-pattern>
+    </servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding</servlet-name>
+    <servlet-class>RegisterBuilding</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding</servlet-name>
+    <url-pattern>/RegisterBuilding</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding1</servlet-name>
+    <servlet-class>RegisterBuilding1</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding1</servlet-name>
+    <url-pattern>/RegisterBuilding1</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding2</servlet-name>
+    <servlet-class>RegisterBuilding2</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding2</servlet-name>
+    <url-pattern>/RegisterBuilding2</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding3</servlet-name>
+    <servlet-class>RegisterBuilding3</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding3</servlet-name>
+    <url-pattern>/RegisterBuilding3</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding4</servlet-name>
+    <servlet-class>RegisterBuilding4</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding4</servlet-name>
+    <url-pattern>/RegisterBuilding4</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding6</servlet-name>
+    <servlet-class>RegisterBuilding6</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding6</servlet-name>
+    <url-pattern>/RegisterBuilding6</url-pattern>
+</servlet-mapping>
+<servlet>
+    <servlet-name>RegisterBuilding7</servlet-name>
+    <servlet-class>RegisterBuilding7</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding7</servlet-name>
+    <url-pattern>/RegisterBuilding7</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>RegisterBuilding2_1</servlet-name>
+    <servlet-class>RegisterBuilding2_1</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>RegisterBuilding2_1</servlet-name>
+    <url-pattern>/RegisterBuilding2_1</url-pattern>
+</servlet-mapping>
+<servlet>
+    <servlet-name>databaseRecord</servlet-name>
+    <servlet-class>databaseRecord</servlet-class>
+</servlet>
+<servlet>
+	<description>
+	</description>
+	<display-name>z</display-name>
+	<servlet-name>z</servlet-name>
+	<servlet-class>z</servlet-class>
+</servlet>
+<servlet>
+	<description>
+	</description>
+	<display-name>FileUpload</display-name>
+	<servlet-name>FileUpload</servlet-name>
+	<servlet-class>evacPlan.FileUpload</servlet-class>
+</servlet>
+<servlet>
+	<description>
+	</description>
+	<display-name>RegisterBuilding8</display-name>
+	<servlet-name>RegisterBuilding8</servlet-name>
+	<servlet-class>RegisterBuilding8</servlet-class>
+	<init-param>
+		<description>
+		</description>
+		<param-name>csv.folderName</param-name>
+		<param-value>uploaded_files/</param-value>
+	</init-param>
+</servlet>
+<servlet>
+	<description>
+	</description>
+	<display-name>RegisterBuilding9</display-name>
+	<servlet-name>RegisterBuilding9</servlet-name>
+	<servlet-class>in.ac.iitb.gise.Algorithms.RegisterBuilding9</servlet-class>
+	<init-param>
+		<description>
+		</description>
+		<param-name>csv.folderName</param-name>
+		<param-value>uploaded_files/</param-value>
+	</init-param>
+</servlet>
+<servlet-mapping>
+    <servlet-name>databaseRecord</servlet-name>
+    <url-pattern>/databaseRecord</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>z</servlet-name>
+	<url-pattern>/z</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>FileUpload</servlet-name>
+	<url-pattern>/FileUpload</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>RegisterBuilding8</servlet-name>
+	<url-pattern>/RegisterBuilding8</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>RegisterBuilding9</servlet-name>
+	<url-pattern>/RegisterBuilding9</url-pattern>
+</servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>default.html</welcome-file>
+        <welcome-file>default.htm</welcome-file>
+        <welcome-file>default.jsp</welcome-file>
+        <welcome-file>home.html</welcome-file>
+        <welcome-file>home.jsp</welcome-file>
+        <welcome-file>User_Login.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>

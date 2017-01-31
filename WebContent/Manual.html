@@ -1,0 +1,91 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 5.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Evacuation Planner</title>
+    </head>
+    <body vlink="black" alink="black" link="black">
+        <table border="0" cellpadding="5" cellspacing="5" width="100%">
+            <tr>
+                <!-- ------------------------------------------------------------------------------------>
+                <td bgcolor="white">
+                    <h2>
+                        <font size="4" >
+                            Evacuation Planning 
+                        </font>
+                    </h2>
+                     <font color ="Black" size="3" face="arial" >
+                    <p> This tool contains two sample data in database <br/>
+                        1. Kresit building for scenario fire <br/>
+                        2. sampleBuilding for scenario fireBlast <br/>
+                        For more detail refer user manual <br/>
+                        <b><a href="http://www.gise.cse.iitb.ac.in/wiki/images/4/42/UserManual.pdf"><font color="blue"></b>
+        User Manual </font></a><br>
+                       
+                            <br/>    
+                            <b><font size ="4">Input</font></b><br/><br/>
+                            <b>1. Static Data - </b><br/>
+                            <p>
+                                Infrastructure of the building in terms of nodes(points) and edges(arcs) where, rooms, halls 
+                                are denoted by nodes and corridors, staircases are denoted by arcs. Nodes' static information contains - <br/>
+                                node id(a unique number for each node), node name(description about the node), node capacity(number of people the 
+                                room/hall can contain at a time), travel time, latitude and longitude.<br>
+                                The Arcs' information contains information about arc id, arc name, from node, to node, travel time, capacity.<br/><br/>
+                            </p>
+                            <b>2. Dynamic Data - </b><br/>
+                            <p>
+                                The dynamic data contains initial capacity of the nodes i.e. actual number of people present at the time at that node.<br/>
+                                This data is to be fed when evacuation planning is implemented.<br/><br/>
+                            </p>
+                            <b>3. Scenario Data - </b><br/>
+                            <p>
+                                Implementing evacuation plan for different scenario like bomb blast or fire in a building, we need scenario information. 
+                                It contains danger level(how much danger is there in a node because of disaster happened), waiting time(how long people can stay in a node safely)<br/><br/>
+                            </p><br/><br/>
+
+                            <b><font size="4">Visualization</font></b><br/><br/>
+                            <p>
+                                Visualization shows floor wise building which contains following options<br/><br/>
+                                <b>1. Show Paths - </b><br/>
+                            <p>
+                                On click a source node, path going out from source node turns green. <br/>
+                            </p>
+                            <b>2. Scenario in a timestamp - </b><br/>
+                            <p>
+                                You can see situation of a building on a particular timestamp, There is a option called show path with prev and next time option.Initially it sets to zero time that is evacuation process is not started yet. When click on next, it shows the path covered from time zero to one. Same applies for prev option. 
+                            </p>
+                            <b>3. Capacity View - </b><br/>
+                            <p>
+                                Increase node size according to the actual capacity of node (in scale down form). <br/>
+                            </p>
+                            <b>4. Normal View - </b><br/>
+                            <p>
+                                Show equi-size node and edge graph of a building. <br/>
+                            </p>
+                            <b>5. Reset Graph - </b><br/>
+                            <p>
+                                Reset Graph to zero time situation
+                            </p>
+                            <b>6. Floor Number - </b><br/>
+                            <p>
+                                It shows total number of floor present in a building, Click on next to previous floor to observe from source to destination. <br/>
+                            </p>
+                    </p><br/><br/>
+                    <b><font size="4">Processing</font></b><br/><br/>
+                    <p>
+                        1. CCRP Algorithm:<br/>
+                        2. Dynamic Ladder Placement:<br/>
+                        3. Priority based Algorithm: <br/>
+                       
+                    </p><br/><br/>
+                    <b><font size="4">Output</font></b><br/><br/>
+                    <p>
+                        The path from source to destination for evacuees with time stamps.
+                    </p>
+                    </font>    
+                    </p>					
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
